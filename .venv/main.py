@@ -59,37 +59,40 @@ class Edit_Window(QWidget):
             volume = int(self.spinBox_2.text())
 
             if not name or not roast or not price or not volume:
-                QMessageBox.warning(self, "Ошибка", "Заполните все обязательные поля!")
+                QMessageBox.warning(self, "Ошибка",
+                                    "Заполните все обязательные поля!")
                 return
 
             cursor = self.connection.cursor()
 
             if self.checkBox.isChecked():
-                    cursor.execute(
-                        """
-                        INSERT INTO coffee (Название_сорта, Степень_обжарки, Молотый_или_в_зернах,
-                            Описание_вкуса, Цена, Объем_упаковки)
-                        VALUES (?, ?, ?, ?, ?, ?)
-                        """,
-                        (name, roast, ground_or_beans, flavor, float(price), int(volume))
-                    )
+                cursor.execute("""
+                    INSERT INTO coffee (Название_сорта, Степень_обжарки,
+                        Молотый_или_в_зернах,
+                        Описание_вкуса, Цена, Объем_упаковки)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                    """, (name, roast, ground_or_beans,
+                          flavor, float(price), int(volume)))
             else:
                 if coffee_id != '0':
                     cursor.execute(
                         """
                         UPDATE coffee
-                        SET Название_сорта = ?, Степень_обжарки = ?, Молотый_или_в_зернах = ?,
-                            Описание_вкуса = ?, Цена = ?, Объем_упаковки = ?
+                        SET Название_сорта = ?, Степень_обжарки = ?,
+                        Молотый_или_в_зернах = ?,
+                        Описание_вкуса = ?, Цена = ?, Объем_упаковки = ?
                         WHERE ID = ?
                         """,
-                        (name, roast, ground_or_beans, flavor, float(price), int(volume), int(coffee_id))
+                        (name, roast, ground_or_beans, flavor, float(price),
+                         int(volume), int(coffee_id))
                     )
                 else:
-                    QMessageBox.information(self, 'Ошибка', 'Вы не выбрали тип записи')
+                    QMessageBox.information(self, 'Ошибка',
+                                            'Вы не выбрали тип записи')
                     return
 
             self.connection.commit()
-            QMessageBox.information(self, "Успех", "Запись успешно сохранена!")
+            QMessageBox.information(self, "Успех", "Операция завершена!")
         except Exception as e:
             QMessageBox.critical(self, "Ошибка", f"Произошла ошибка: {e}")
 
